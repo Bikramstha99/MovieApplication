@@ -1,0 +1,29 @@
+﻿@model List<MovieApplication.Models.Domain.MovieModel>
+@{
+
+}
+<h1>Movie</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Category</th>
+
+            <th> </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var movie in Model)
+        {
+            <tr>
+                <td>@movie.Id</td>
+                <td>@movie.Name</td>
+                <td>@movie.Category</td>
+
+                <td><a href="Movie/View/@movie.Id">View</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
