@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MovieApplication.Data;
+using MovieApplication.Repository.Implementations;
+using MovieApplication.Repository.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MovieDbContext>(options =>
     options.UseSqlServer(builder.Configuration
     .GetConnectionString("MvcConnectionString")));
+builder.Services.AddScoped<IMovie, Movie>();
 
 
 var app = builder.Build();
@@ -29,6 +32,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Movies}/{action=Index}/{id?}");
 
 app.Run();
