@@ -2,88 +2,73 @@
 using MovieApplication.Data;
 using MovieApplication.Models.Domain;
 using MovieApplication.Models.Dto;
+using MovieApplication.Repository.Interfaces;
 
 namespace MovieApplication.Controllers
 {
     public class MovieController : Controller
     {
-        private readonly MovieDbContext _moviedbcontext;
+        private readonly IMovie _IMovie;
 
-        public MovieController(MovieDbContext moviedbcontext)
+        public MovieController(IMovie imovie)
         {
-            _moviedbcontext = moviedbcontext;
+            _IMovie = imovie;
         }
         [HttpGet]
-
         public IActionResult Index()
         {
-            var movie= _moviedbcontext.MovieModels.ToList();
-            return View(movie);
+            var data = _IMovie.GetAllMovies();
+            return View(data);
         }
         [HttpGet]
-        public IActionResult Add()
+        public IActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
-        public IActionResult Add(AddMovie addmovie)
+        public IActionResult Create(AddMovie addmovie)
         {
-            var movie = new MovieModel()
-            {              
-                Name = addmovie.Name,
-                Category = addmovie.Category,
-            };
-            _moviedbcontext.MovieModels.Add(movie);
-            _moviedbcontext.SaveChanges();
+            _IMovie.AddMovies(addmovie);
+            return RedirectToAction("Index");
+
+        }
+        [HttpGet]
+        public IActionResult Edit(int Id)
+        {
+            var movie = _IMovie.GetByID(Id);
+            return View("view", movie);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(UpdateMovie updatemovie)
+        {
+            _IMovie.UpdateMovies(updatemovie);
+
+            return RedirectToAction("Index");
+
+        }
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var movie= _IMovie.GetByID(id);
+            return View("view", movie);
+
+        }
+        [HttpPost]
+        public IActionResult Delete(UpdateMovie deletemovie)
+        {
+            _IMovie.UpdateMovies(deletemovie);
+
             return RedirectToAction("Index");
         }
         [HttpGet]
-        public IActionResult View(int Id)
+        public IActionResult Details(int id)
         {
-            {
-                var movie= _moviedbcontext.MovieModels.FirstOrDefault(e => e.Id == Id);
-                if (movie != null)
-                {
-                    var viewmodel = new UpdateMovie()
-                    {
-                        Id = movie.Id,
-                        Name = movie.Name,
-                        Category = movie.Category,
-                      
-                    };
-                    return View("View", viewmodel);
-                }
-                return RedirectToAction("Index");
-            }
+            var movie=_IMovie.GetByID(id);
+            return View(movie);
         }
-        [HttpPost]
-        public IActionResult View(UpdateMovie updatemovie)
-        {
-            var movie =  _moviedbcontext.MovieModels.Find(updatemovie.Id);
-            if (movie != null)
-            {
-                movie.Name = updatemovie.Name;
-                movie.Category = updatemovie.Category;
-                _moviedbcontext.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return RedirectToAction("Index");
-
-        }
-        [HttpPost]
-        public IActionResult Delete(UpdateMovie model)
-        {
-            var student = _moviedbcontext.MovieModels.Find(model.Id);
-            if (student != null)
-            {
-                _moviedbcontext.MovieModels.Remove(student);
-                _moviedbcontext.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return RedirectToAction("Index");
-        }
-
+        //[HttpPost]
+        //public IActionResult 
     }
-}  
-
-        
+}     
