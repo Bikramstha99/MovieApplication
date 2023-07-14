@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 
 namespace MovieApplication.Models.Dto
 {
@@ -9,7 +10,15 @@ namespace MovieApplication.Models.Dto
         [Required]
         public string Name { get; set; }
         [Required]
-        public string Category { get; set; }
+        public string Genre { get; set; }
+        [Required]
+        public string Director { get; set; }
+        [Required]
+        public int Year{ get; set; }
+        [Required]
+        public string Country { get ; set; }
+        public string? Image { get; set; }
+
 
     }
 }

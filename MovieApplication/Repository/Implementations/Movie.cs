@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieApplication.Data;
 using MovieApplication.Migrations;
@@ -11,10 +12,12 @@ namespace MovieApplication.Repository.Implementations
     public class Movie : IMovie
     {
         private readonly MovieDbContext _moviedbcontext;
+        
 
         public Movie(MovieDbContext moviedbcontext)
         {
             _moviedbcontext = moviedbcontext;
+            
         }
         public List<MovieModel> GetAllMovies()
         {
@@ -24,15 +27,22 @@ namespace MovieApplication.Repository.Implementations
 
         public bool AddMovies(AddMovie addmovie)
         {
-            var movie = new MovieModel()
-            {
-                Name = addmovie.Name,
-                Category = addmovie.Category,
-            };
-            _moviedbcontext.MovieModels.Add(movie);
-            _moviedbcontext.SaveChanges();
-            return true;
+           
+                var movie = new MovieModel()
+                {
+                    Name = addmovie.Name,
+                    Genre = addmovie.Genre,
+                    Image = addmovie.Image,
+                    Director = addmovie.Director,
+                    Country = addmovie.Country,
 
+                  
+                };
+                _moviedbcontext.MovieModels.Add(movie);
+                _moviedbcontext.SaveChanges();  
+                return true;
+
+         
         }
         public UpdateMovie GetByID(int Id)
         {
@@ -41,7 +51,10 @@ namespace MovieApplication.Repository.Implementations
             {
                 Id = movie.Id,
                 Name = movie.Name,
-                Category = movie.Category,
+                Genre = movie.Genre,
+                Image= movie.Image,
+                Director = movie.Director,
+                Country=movie.Country,
 
             };
             return viewmodel;
@@ -53,7 +66,11 @@ namespace MovieApplication.Repository.Implementations
             var movie = _moviedbcontext.MovieModels.Find(updatemovie.Id);
             movie.Id = updatemovie.Id;
             movie.Name = updatemovie.Name;
-            movie.Category = updatemovie.Category;
+            movie.Genre = updatemovie.Genre;
+            movie.Image = updatemovie.Image;
+            movie.Director = updatemovie.Director;
+            movie.Country = updatemovie.Country;
+           
             _moviedbcontext.SaveChanges();
             return true;
         }
@@ -62,16 +79,9 @@ namespace MovieApplication.Repository.Implementations
         public bool DeleteMovies(UpdateMovie deletemovie)
         {
             var movie = _moviedbcontext.MovieModels.Find(deletemovie.Id);
-            if (movie != null)
-            {
-                _moviedbcontext.MovieModels.Remove(movie);
-                
-                _moviedbcontext.SaveChanges();
-                return true;
-            }
-            return false;
+            _moviedbcontext.MovieModels.Remove(movie);
+            _moviedbcontext.SaveChanges();
+            return true;
         }
-
-        
     }
 }
